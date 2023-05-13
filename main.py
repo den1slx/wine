@@ -31,12 +31,48 @@ def date_check(date):
     return f'Уже {date} {year} с вами'
 
 
+def get_unique_values(list_):
+    sorted_list = []
+    for i in list_:
+        if i not in sorted_list:
+            sorted_list.append(i)
+    return sorted_list
+
+
+def serialize_wines(path_to_excel_file):
+    excel_wines = read_excel(path_to_excel_file)
+    dictionary_wines = excel_wines.to_dict()
+
+    category, title, sort, price, image = excel_wines.columns.to_list()
+    column_range = len(excel_wines[title])
+    categories = (get_unique_values(excel_wines[category].to_list()))
+    wines_categories = {}
+    wines = []
+
+    for i in range(column_range):
+        wine = {
+            'category': dictionary_wines[category][i],
+            'title': dictionary_wines[title][i],
+            'sort': dictionary_wines[sort][i],
+            'price': dictionary_wines[price][i],
+            'image': f"images/{dictionary_wines[image][i]}",
+        }
+        wines.append(wine)
+
+    for category in categories:
+        wines_categories.update({category: [wine for wine in wines if wine['category'] == category]})
+
+    return wines_categories
+
+
 year_of_foundation = datetime(year=1920, month=1, day=1)
 now = datetime.now()
 year_total_seconds = 365*24*60*60
 delta = (now - year_of_foundation).total_seconds()
 company_age = int(delta // year_total_seconds)
 title = date_check(company_age)
+
+categories_wine = serialize_wines('wine2.xlsx')
 
 excel_wines = read_excel('wine.xlsx')
 dictionary_wines = excel_wines.to_dict()
@@ -51,6 +87,8 @@ for i in range(column_range):
         'image': f"images/{dictionary_wines['Картинка'][i]}",
     }
     wines.append(wine)
+
+
 
 env = Environment(
     loader=FileSystemLoader('.'),  # where this html file
