@@ -49,32 +49,6 @@ def get_company_age():
     return company_age
 
 
-def serialize_wines(path_to_excel_file, path_to_images='images/'):
-    excel_wines = read_excel(path_to_excel_file, keep_default_na=False, na_values=['nan', 'NA', 'N/A'])
-    dictionary_wines = defaultdict(str)
-    dictionary_wines.update(excel_wines.to_dict())
-    category, title, sort, price, image = excel_wines.columns.to_list()
-    column_range = len(excel_wines[title])
-    categories = (get_unique_values(excel_wines[category].to_list()))
-    wines_categories = defaultdict(list)  # ??
-    wines = []
-
-    for i in range(column_range):
-        wine = {
-            'category': dictionary_wines[category][i],
-            'title': dictionary_wines[title][i],
-            'sort': dictionary_wines[sort][i],
-            'price': dictionary_wines[price][i],
-            'image': f"{path_to_images}{dictionary_wines[image][i]}",
-        }
-        wines.append(wine)
-
-    for category in categories:
-        wines_categories.update({category: [wine for wine in wines if wine['category'] == category]})
-
-    return wines_categories
-
-
 def serialize_wines(path_to_excel_file, sort_by_key=0):
 
     excel_wines = read_excel(path_to_excel_file, keep_default_na=False, na_values=['nan', 'NA', 'N/A'])
