@@ -49,7 +49,7 @@ def get_company_age():
     return company_age
 
 
-def serialize_wines(path_to_excel_file):
+def serialize_wines(path_to_excel_file, path_to_images='images/'):
     excel_wines = read_excel(path_to_excel_file, keep_default_na=False, na_values=['nan', 'NA', 'N/A'])
     dictionary_wines = defaultdict(str)
     dictionary_wines.update(excel_wines.to_dict())
@@ -65,7 +65,7 @@ def serialize_wines(path_to_excel_file):
             'title': dictionary_wines[title][i],
             'sort': dictionary_wines[sort][i],
             'price': dictionary_wines[price][i],
-            'image': f"images/{dictionary_wines[image][i]}",
+            'image': f"{path_to_images}{dictionary_wines[image][i]}",
         }
         wines.append(wine)
 
@@ -75,8 +75,31 @@ def serialize_wines(path_to_excel_file):
     return wines_categories
 
 
+def serialize_wines(path_to_excel_file, sort_by_key=0):
+
+    excel_wines = read_excel(path_to_excel_file, keep_default_na=False, na_values=['nan', 'NA', 'N/A'])
+    dictionary_wines = excel_wines.to_dict()
+    keys = list(dictionary_wines.keys())
+    column_range = len(dictionary_wines[keys[0]])
+    categories = (get_unique_values(excel_wines[keys[sort_by_key]].to_list()))
+    wines_categories = defaultdict(list)
+    wines = []
+
+    for i in range(column_range):
+        wine = {}
+        for key in keys:
+            wine.update({key: dictionary_wines[key][i]})
+            # note: "images/{{wine.Картинка}}"
+        wines.append(wine)
+
+    for category in categories:
+        wines_categories.update({category: [wine for wine in wines if wine[keys[sort_by_key]] == category]})
+    return wines_categories
+
+
 title = date_check(get_company_age())
-categories_wine = serialize_wines('wine2.xlsx')
+
+categories_wine = serialize_wines('wine3.xlsx')
 
 
 env = Environment(
@@ -91,7 +114,7 @@ rendered_page = template.render(
     categories_wine=categories_wine,
 )
 
-with open('index.html', 'w', encoding="utf8") as file:  # save to index.html filled pattern
+with open('index.html', 'w', encoding="utf8") as file:
     file.write(rendered_page)
 
 
