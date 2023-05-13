@@ -89,7 +89,6 @@ def serialize_wines(path_to_excel_file, sort_by_key=0):
         wine = {}
         for key in keys:
             wine.update({key: dictionary_wines[key][i]})
-            # note: "images/{{wine.Картинка}}"
         wines.append(wine)
 
     for category in categories:
