@@ -8,10 +8,9 @@ import argparse
 
 def create_parser():
     parser = argparse.ArgumentParser(
-        prog='main.py',
         description='Сайт магазина авторского вина "Новое русское вино"')
-    parser.add_argument('--path', '-p', help='Path to xlsx file, default: example.xlsx', default='example.xlsx')
-    parser.add_argument('--images_path', '-ip', help='Path to images, default: images/', default='images/')
+    parser.add_argument('--path', '-p', help='Path to xlsx file, default: %(default)s', default='example.xlsx')
+    parser.add_argument('--images_path', '-ip', help='Path to images, default: %(default)s', default='images/')
     return parser
 
 
@@ -23,6 +22,7 @@ def main():
     images_address = args.images_path
     try:
         path = env('PATH_TO_IMAGES')
+
     except environs.EnvError:
         path = None
     if path:
