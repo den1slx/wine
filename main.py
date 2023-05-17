@@ -7,30 +7,24 @@ import argparse
 
 
 def create_parser():
+    env = environs.Env()
+    env.read_env()
     parser = argparse.ArgumentParser(
         description='Сайт магазина авторского вина "Новое русское вино"')
-    parser.add_argument('--path', '-p', help='Path to xlsx file, default: %(default)s', default='example.xlsx')
-    parser.add_argument('--images_path', '-ip', help='Path to images, default: %(default)s', default='images/')
+    parser.add_argument('--path', '-p', help='Path to xlsx file, default: %(default)s',
+                        default=env.str('PATH_TO_XLSX', default='example.xlsx'))
+    parser.add_argument('--images_path', '-ip', help='Path to images, default: %(default)s',
+                        default=env.str('PATH_TO_IMAGES', default='image/'))
     return parser
 
 
 def main():
-    env = environs.Env()
     company_age = create_company_age_string(get_company_age())
     parser = create_parser()
     args = parser.parse_args()
     images_address = args.images_path
-    try:
-        path = env('PATH_TO_IMAGES')
-
-    except environs.EnvError:
-        path = None
-    if path:
-        categories_wine = get_categories_with_wines(path)
-    else:
-        path = args.path
-        categories_wine = get_categories_with_wines(path)
-
+    path = args.path
+    categories_wine = get_categories_with_wines(path)
     env = Environment(
         loader=FileSystemLoader('.'),
         autoescape=select_autoescape(['html', 'xml'])
