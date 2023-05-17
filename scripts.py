@@ -28,14 +28,6 @@ def create_company_age_string(date):
     return f'Уже {date} {year} с вами'
 
 
-def get_unique_values(list_):
-    sorted_list = []
-    for i in list_:
-        if i not in sorted_list:
-            sorted_list.append(i)
-    return sorted_list
-
-
 def get_company_age():
     foundation_year = 1920
     now = datetime.now().year
@@ -43,14 +35,13 @@ def get_company_age():
     return company_age
 
 
-def get_categories_with_wines(path_to_excel_file, sort_by_key=0):
+def get_categories_with_wines(path_to_excel_file):
 
     excel_wines = read_excel(path_to_excel_file, keep_default_na=False, na_values=['nan', 'NA', 'N/A'])
-    dictionary_wines = excel_wines.to_dict()
-    keys = list(dictionary_wines.keys())
-    categories = get_unique_values(excel_wines[keys[sort_by_key]].to_list())
     wines = excel_wines.to_dict(orient='records')
     wines_categories = defaultdict(list)
-    for category in categories:
-        wines_categories.update({category: [wine for wine in wines if wine[keys[sort_by_key]] == category]})
+    for wine in wines:
+        wines_categories[wine['Категория']].append(wine)
+
     return wines_categories
+
