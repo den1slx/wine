@@ -44,5 +44,3 @@ def get_categories_with_wines(path_to_excel_file):
         wines_categories[wine['Категория']].append(wine)
 
     return wines_categories
-
-print(get_categories_with_wines('example.xlsx'))
