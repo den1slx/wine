@@ -7,7 +7,9 @@ import argparse
 
 
 def create_parser():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        prog='main.py',
+        description='Сайт магазина авторского вина "Новое русское вино"')
     parser.add_argument('--path', '-p', help='Path to xlsx file, default: example.xslx', default='example.xlsx')
     parser.add_argument('--images_path', '-ip', help='Path to images, default: images/', default='images/')
     return parser
