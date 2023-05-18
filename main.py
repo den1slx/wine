@@ -13,6 +13,8 @@ def create_parser():
                         default='example.xlsx')
     parser.add_argument('--images_path', '-ip', help='Path to images, default: %(default)s',
                         default='images/')
+    parser.add_argument('--env', '-e', action='store_true', help='''
+    Use this for load environment. For unspecified values in "env" used values "path" and "images_path"''')
     return parser
 
 
@@ -21,8 +23,11 @@ def main():
     company_age = create_company_age_string(get_company_age())
     parser = create_parser()
     args = parser.parse_args()
-    images_address = environs.Env().str('PATH_TO_IMAGES', default=args.images_path)
-    path = environs.Env().str('PATH_TO_XLSX', default=args.path)
+    path = args.path
+    images_address = args.images_path
+    if args.env:
+        images_address = environs.Env().str('PATH_TO_IMAGES', default=args.images_path)
+        path = environs.Env().str('PATH_TO_XLSX', default=args.path)
     categories_wine = get_categories_with_wines(path)
     env = Environment(
         loader=FileSystemLoader('.'),
