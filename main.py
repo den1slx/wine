@@ -10,9 +10,9 @@ def create_parser():
     parser = argparse.ArgumentParser(
         description='Сайт магазина авторского вина "Новое русское вино"')
     parser.add_argument('--path', '-p', help='Path to xlsx file, default: %(default)s',
-                        default=environs.Env().str('PATH_TO_XLSX', default='example.xlsx'))
+                        default='example.xlsx')
     parser.add_argument('--images_path', '-ip', help='Path to images, default: %(default)s',
-                        default=environs.Env().str('PATH_TO_IMAGES', default='images/'))
+                        default='images/')
     return parser
 
 
@@ -21,8 +21,8 @@ def main():
     company_age = create_company_age_string(get_company_age())
     parser = create_parser()
     args = parser.parse_args()
-    images_address = args.images_path
-    path = args.path
+    images_address = environs.Env().str('PATH_TO_IMAGES', default=args.images_path)
+    path = environs.Env().str('PATH_TO_XLSX', default=args.path)
     categories_wine = get_categories_with_wines(path)
     env = Environment(
         loader=FileSystemLoader('.'),
